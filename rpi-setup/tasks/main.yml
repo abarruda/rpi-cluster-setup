@@ -1,0 +1,66 @@
+---
+# tasks file for pi-setup
+
+- name: 'Disable HDMI'
+  command: tvservice -o
+  become: yes
+  become_method: sudo
+
+- name: 'Disable Bluetooth'
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: /boot/config.txt
+    line: 'dtoverlay=pi3-disable-bt'
+
+# - name: 'Disable Wireless'
+#   become: yes
+#   become_method: sudo
+#   lineinfile:
+#     path: /boot/config.txt
+#     line: 'dtoverlay=pi3-disable-wifi'
+
+- name: 'Remove swap'
+  become: yes
+  become_method: sudo
+  shell: /tmp/init/remove-swap.sh
+
+- name: 'Transfer scripts'
+  become: yes
+  become_method: sudo
+  copy: src=./ dest=/tmp/init/ mode=0755
+
+- name: 'Configure locale'
+  become: yes
+  become_method: sudo
+  shell: /tmp/init/locale.sh
+
+- name: 'Set timezone'
+  become: yes
+  become_method: sudo
+  shell: /tmp/init/timezone.sh
+
+- name: 'Configure keyboard'
+  become: yes
+  become_method: sudo
+  shell: /tmp/init/keyboard.sh
+
+# - apt: update_cache=yes
+#   name: 'Update apt cache'
+#   become: yes
+#   become_method: sudo
+
+# - apt: upgrade=dist
+#   name: 'Upgrade apt dist'
+#   become: yes
+#   become_method: sudo
+
+- name: 'Install Packages'
+  become: yes
+  become_method: sudo
+  apt: 
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - screen
+      - vim
