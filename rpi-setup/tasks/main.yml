@@ -1,6 +1,11 @@
 ---
 # tasks file for pi-setup
 
+- name: 'Transfer scripts'
+  become: yes
+  become_method: sudo
+  copy: src=./ dest=/tmp/init/ mode=0755
+
 - name: 'Disable HDMI'
   command: tvservice -o
   become: yes
@@ -13,22 +18,17 @@
     path: /boot/config.txt
     line: 'dtoverlay=pi3-disable-bt'
 
-# - name: 'Disable Wireless'
-#   become: yes
-#   become_method: sudo
-#   lineinfile:
-#     path: /boot/config.txt
-#     line: 'dtoverlay=pi3-disable-wifi'
+- name: 'Disable Wireless'
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: /boot/config.txt
+    line: 'dtoverlay=pi3-disable-wifi'
 
 - name: 'Remove swap'
   become: yes
   become_method: sudo
   shell: /tmp/init/remove-swap.sh
-
-- name: 'Transfer scripts'
-  become: yes
-  become_method: sudo
-  copy: src=./ dest=/tmp/init/ mode=0755
 
 - name: 'Configure locale'
   become: yes
@@ -45,10 +45,10 @@
   become_method: sudo
   shell: /tmp/init/keyboard.sh
 
-# - apt: update_cache=yes
-#   name: 'Update apt cache'
-#   become: yes
-#   become_method: sudo
+- apt: update_cache=yes
+  name: 'Update apt cache'
+  become: yes
+  become_method: sudo
 
 # - apt: upgrade=dist
 #   name: 'Upgrade apt dist'
@@ -64,3 +64,21 @@
     packages:
       - screen
       - vim
+
+- name: 'Install Docker'
+  become: yes
+  become_method: sudo
+  shell: export VERSION=18.06 && curl -sSL https://get.docker.com | sh && usermod pi -aG docker
+
+- name: 'Install Kubernetes'
+  become: yes
+  become_method: sudo
+  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm
+
+- name: 'Add CPU, memory to cgroup resources'
+  become: yes
+  become_method: sudo
+  replace:
+    dest: /boot/cmdline.txt
+    regexp: 'rootwait$'
+    replace: "rootwait cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1"
