@@ -82,3 +82,11 @@
     dest: /boot/cmdline.txt
     regexp: 'rootwait$'
     replace: "rootwait cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1"
+
+- name: Restarting Host
+  become: yes
+  become_method: sudo
+  shell: sleep 2 && shutdown -r now "Rebooting to reload memory configurations."
+  async: 1
+  poll: 0
+  ignore_errors: true
