@@ -16,4 +16,4 @@ Add IPs of new nodes to hosts file
 
 Run
 --------------
-ansible-playbook playbook.yml -i \<hosts file\> --private-key \<private key here\>
+ansible-playbook playbook.yml -i \<hosts file\> --vault-id @prompt --private-key \<private key here\>
