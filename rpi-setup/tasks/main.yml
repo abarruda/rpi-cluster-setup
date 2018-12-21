@@ -64,6 +64,9 @@
     packages:
       - screen
       - vim
+      - git
+  tags:
+      - install-packages
 
 - name: 'Mount network storage'
   become: yes
