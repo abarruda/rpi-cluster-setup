@@ -75,7 +75,7 @@
     path: "{{ network_storage_mount }}"
     src: "{{ network_storage_mount_source }}"
     fstype: cifs
-    opts: user={{ network_storage_user }},pass={{ network_storage_pass }},vers=1.0
+    opts: auto,x-systemd.automount,user={{ network_storage_user }},pass={{ network_storage_pass }},vers=1.0
     state: mounted
 
 - name: 'Install Docker'
