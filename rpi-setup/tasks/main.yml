@@ -2,6 +2,8 @@
 # tasks file for pi-setup
 
 - name: 'Transfer scripts'
+  tags:
+    - transfer-scripts
   become: yes
   become_method: sudo
   copy: src=./ dest=/tmp/init/ mode=0755
@@ -65,6 +67,7 @@
       - screen
       - vim
       - git
+      - jq
   tags:
       - install-packages
 
@@ -89,6 +92,13 @@
   become: yes
   become_method: sudo
   shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm
+
+- name: 'CIFS Flexvolume Plugin for Kubernetes'
+  become: yes
+  become_method: sudo
+  shell: /tmp/init/k8s-cifs-flexvolume-plugin.sh
+  tags:
+    - cifs-flexvolume-plugin
 
 - name: 'Add CPU, memory to cgroup resources'
   become: yes
