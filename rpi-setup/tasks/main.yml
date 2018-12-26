@@ -71,17 +71,19 @@
   tags:
       - install-packages
 
-- name: 'Mount network storage'
-  become: yes
-  become_method: sudo
-  mount:
-    path: "{{ network_storage_mount }}"
-    src: "{{ network_storage_mount_source }}"
-    fstype: cifs
-    opts: auto,x-systemd.automount,user={{ network_storage_user }},pass={{ network_storage_pass }},vers=1.0
-    state: mounted
-  tags:
-    - mount-network-storage
+# Conflicts with CIFS Flexvolume plugin
+#
+#- name: 'Mount network storage'
+#  become: yes
+#  become_method: sudo
+#  mount:
+#    path: "{{ network_storage_mount }}"
+#    src: "{{ network_storage_mount_source }}"
+#    fstype: cifs
+#    opts: auto,x-systemd.automount,user={{ network_storage_user }},pass={{ network_storage_pass }},vers=1.0
+#    state: mounted
+#  tags:
+#    - mount-network-storage
 
 - name: 'Install Docker'
   become: yes
