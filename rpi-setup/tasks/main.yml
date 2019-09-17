@@ -7,6 +7,8 @@
   become: yes
   become_method: sudo
   copy: src=./ dest=/tmp/init/ mode=0755
+  tags:
+    - transfer-scripts
 
 - name: 'Disable HDMI'
   command: tvservice -o
@@ -36,21 +38,29 @@
   become: yes
   become_method: sudo
   shell: /tmp/init/locale.sh
+  tags:
+    - configure-locale
 
 - name: 'Set timezone'
   become: yes
   become_method: sudo
   shell: /tmp/init/timezone.sh
+  tags:
+    - configure-timezone
 
 - name: 'Configure keyboard'
   become: yes
   become_method: sudo
   shell: /tmp/init/keyboard.sh
+  tags:
+    - configure-keyboard
 
 - apt: update_cache=yes
   name: 'Update apt cache'
   become: yes
   become_method: sudo
+  tags:
+    -update-cache
 
 # - apt: upgrade=dist
 #   name: 'Upgrade apt dist'
@@ -89,11 +99,15 @@
   become: yes
   become_method: sudo
   shell: export VERSION=18.06 && curl -sSL https://get.docker.com | sh && usermod pi -aG docker
+  tags:
+    - install-docker
 
 - name: 'Install Kubernetes'
   become: yes
   become_method: sudo
-  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm
+  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm=1.13.1-00 kubernetes-cni=0.6.0-00 kubectl=1.13.1-00 kubelet=1.13.1-00
+  tags:
+   - install-kubernetes
 
 - name: 'CIFS Flexvolume Plugin for Kubernetes'
   become: yes
