@@ -2,8 +2,6 @@
 # tasks file for pi-setup
 
 - name: 'Transfer scripts'
-  tags:
-    - transfer-scripts
   become: yes
   become_method: sudo
   copy: src=./ dest=/tmp/init/ mode=0755
@@ -105,7 +103,7 @@
 - name: 'Install Kubernetes'
   become: yes
   become_method: sudo
-  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm=1.13.1-00 kubernetes-cni=0.6.0-00 kubectl=1.13.1-00 kubelet=1.13.1-00
+  shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \ echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list && \ sudo apt-get update -q && \ sudo apt-get install -qy kubeadm=1.17.0-00 kubernetes-cni=0.7.5-00 kubectl=1.17.0-00 kubelet=1.17.0-00
   tags:
    - install-kubernetes
 
