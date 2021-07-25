@@ -93,6 +93,39 @@
 #  tags:
 #    - mount-network-storage
 
+- name: 'Container Image Registry entry for /etc/hosts'
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ container_images_host_ip }}   {{ container_images_host_dns }}"
+  tags:
+    - container-image-registry
+
+- name: 'Container Image Registry trust'
+  become: yes
+  become_method: sudo
+  copy:
+    dest: /etc/docker/daemon.json
+    force: yes
+    content: |
+      {
+        "insecure-registries": ["REGISTRY_HERE"]
+      }
+  tags:
+    - container-image-registry-trust
+
+- name: 'Container Image Registry trust population'
+  # This seems to be necessary instead of just relying on the above block, due to this: https://github.com/ansible/ansible/issues/40476
+  become: yes
+  become_method: sudo
+  replace:
+    path: /etc/docker/daemon.json
+    regexp: 'REGISTRY_HERE'
+    replace: "{{ container_images_host_dns }}"
+  tags:
+    - container-image-registry-trust
+
 - name: 'Install Docker'
   become: yes
   become_method: sudo

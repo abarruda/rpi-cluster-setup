@@ -16,4 +16,18 @@ Add IPs of new nodes to hosts file
 
 Run
 --------------
-ansible-playbook playbook.yml -i \<hosts file\> --vault-id @prompt --private-key \<private key here\>
+```bash
+ansible-playbook playbook.yml -i \<hosts file\> --vault-id @prompt --private-key \<path to private key here\>
+```
+
+To target a specific task:
+```bash
+$ ansible-playbook playbook.yml -i <path to hosts file> --vault-id @prompt --private-key <path to private key here> --tags "container-image-registry"
+```
+
+Adding a new Secret
+--------------
+```bash
+$ ansible-vault encrypt_string --vault-id @prompt "10.10.10.1" --name 'container_images_host_ip'
+```
+* Must use the same password as prompted during "Run" section.
