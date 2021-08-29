@@ -12,17 +12,24 @@ Stretch
 Static IP address and hostname of new node configured.  
 
 Public keys must exist on all nodes being configured.  
-Add IPs of new nodes to hosts file  
+Add IPs of new nodes to hosts file
+
+Build
+--------------
+```bash
+````  
 
 Run
 --------------
 ```bash
-ansible-playbook playbook.yml -i \<hosts file\> --vault-id @prompt --private-key \<path to private key here\>
+docker run --rm -it -v $(pwd):/data -v ~/.ssh:/keys rpi-cluster-setup:test /bin/bash
+
+ansible-playbook /data/playbook.yml -i /data/hosts -u pi --vault-id @prompt --private-key \<path to private key here\>
 ```
 
 To target a specific task:
 ```bash
-$ ansible-playbook playbook.yml -i <path to hosts file> --vault-id @prompt --private-key <path to private key here> --tags "container-image-registry"
+$ ansible-playbook /data/playbook.yml -i /data/hosts -u pi --vault-id @prompt --private-key <path to private key here> --tags "container-image-registry"
 ```
 
 Adding a new Secret
