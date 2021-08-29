@@ -93,6 +93,13 @@
 #  tags:
 #    - mount-network-storage
 
+- name: 'Install Docker'
+  become: yes
+  become_method: sudo
+  shell: export VERSION=18.06 && curl -sSL https://get.docker.com | sh && usermod pi -aG docker
+  tags:
+    - install-docker
+
 - name: 'Container Image Registry entry for /etc/hosts'
   become: yes
   become_method: sudo
@@ -125,13 +132,6 @@
     replace: "{{ container_images_host_dns }}"
   tags:
     - container-image-registry-trust
-
-- name: 'Install Docker'
-  become: yes
-  become_method: sudo
-  shell: export VERSION=18.06 && curl -sSL https://get.docker.com | sh && usermod pi -aG docker
-  tags:
-    - install-docker
 
 - name: 'Install Kubernetes'
   become: yes
